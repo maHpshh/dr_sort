@@ -2,25 +2,28 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>닺람 떡밥 소트</title>
     <style>
-        body { font-family: '돋움', sans-serif; text-align: center; background-color: #ffffff; }
-        #mainTable { margin: 50px auto; border-collapse: separate; border-spacing: 10px; width: 450px; }
+        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; text-align: center; padding-top: 50px; background-color: #fcfcfc; }
+        #battleNumber { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; color: #333; }
+        #mainTable { margin: 0 auto; border-spacing: 15px; }
         .field { 
-            width: 200px; height: 250px; border: 2px solid #000; 
+            width: 180px; height: 180px; border: 2px solid #333; border-radius: 15px;
             cursor: pointer; display: table-cell; vertical-align: middle; 
-            padding: 10px; background: #f9f9f9;
+            padding: 20px; background: #ffffff; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 14px; line-height: 1.5;
         }
-        .field:hover { background: #eee; }
-        #battleNumber { font-size: 16px; margin-bottom: 20px; font-weight: bold; }
-        #resultField { margin-top: 30px; }
-        table.res { margin: 0 auto; border: 1px solid #000; border-collapse: collapse; width: 300px; }
-        table.res td { border: 1px solid #000; padding: 5px; }
+        .field:hover { background: #f0f0f0; transform: translateY(-5px); }
+        #resultField { margin-top: 40px; }
+        .res-table { margin: 0 auto; border-collapse: collapse; width: 320px; background: white; }
+        .res-table td { border: 1px solid #ddd; padding: 10px; font-size: 14px; }
+        .res-header { background: #333; color: white; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="battleNumber">준비 중...</div>
+    <div id="battleNumber">로딩 중...</div>
 
     <table id="mainTable">
         <tr>
@@ -30,11 +33,10 @@
     </table>
 
     <div id="resultField">
-        <p>@maHpshh</p>
+        <p style="color: #888; font-size: 12px; margin-top: 50px;">@maHpshh</p>
     </div>
 
     <script type="text/javascript">
-        // 데이터 리스트
         var namMember = [
             "250206 릴스", "250307 릴스", "250310 릴스", "250314 릴스", "인간극장 손장난",
             "룸할운", "0.5 사건", "하람이 생일편지", "누땜", "서스페", "56라방", "에바랜드",
@@ -44,7 +46,7 @@
             "250623 힌트편애", "250627 헬로82", "250628 돌침", "250711 스타일 안무",
             "250722 요맘때", "250807 악이사 시사회", "250924 이대로 완벽해", "250929 뮤웨 와플",
             "251021 뮤웨 조리퐁", "201107 또우인", "251119 안아줄따람", "251120 테레카",
-            "251209🥛🤍💭", "251215 팬미 비하인드", "251224 마니또", "251225 크리스마스 라방",
+            "251209🥛🤍", "251215 팬미 비하인드", "251224 마니또", "251225 크리스마스 라방",
             "260103 마마 비하인드", "260105 뮤뱅 글로벌", "260109 일본 팬싸", "260112 위버스",
             "260113 크리스마스🥛", "260117 공항", "260121 릴스", "260122 🥛🐵😽"
         ];
@@ -59,7 +61,6 @@
             parent[n] = -1;
             totalSize = 0;
             n++;
-
             for (var i=0; i<lstMember.length; i++) {
                 if(lstMember[i].length>=2) {
                     var mid = Math.ceil(lstMember[i].length/2);
@@ -92,16 +93,7 @@
                 rec[nrec++] = lstMember[cmp2][head2++];
                 finishSize++;
                 while (equal[rec[nrec-1]]!=-1) { rec[nrec++] = lstMember[cmp2][head2++]; finishSize++; }
-            } else {
-                rec[nrec++] = lstMember[cmp1][head1++];
-                finishSize++;
-                while (equal[rec[nrec-1]]!=-1) { rec[nrec++] = lstMember[cmp1][head1++]; finishSize++; }
-                equal[rec[nrec-1]] = lstMember[cmp2][head2];
-                rec[nrec++] = lstMember[cmp2][head2++];
-                finishSize++;
-                while (equal[rec[nrec-1]]!=-1) { rec[nrec++] = lstMember[cmp2][head2++]; finishSize++; }
             }
-
             if (head1 == lstMember[cmp1].length || head2 == lstMember[cmp2].length) {
                 if (head1 < lstMember[cmp1].length) {
                     while (head1 < lstMember[cmp1].length) { rec[nrec++] = lstMember[cmp1][head1++]; finishSize++; }
@@ -113,10 +105,8 @@
                 }
                 lstMember.pop(); lstMember.pop();
                 cmp1 -= 2; cmp2 -= 2;
-                head1 = head2 = 0;
-                nrec = 0;
+                head1 = head2 = 0; nrec = 0;
             }
-
             if (cmp1 < 0) {
                 document.getElementById("battleNumber").innerHTML = "정렬 완료!";
                 showResult();
@@ -127,9 +117,28 @@
         }
 
         function showResult() {
-            var ranking = 1, sameRank = 1, str = "<table class='res'><tr><td>순위</td><td>이름</td></tr>";
+            var ranking = 1, sameRank = 1, str = "<table class='res-table'><tr class='res-header'><td>순위</td><td>항목</td></tr>";
             for (var i=0; i<namMember.length; i++) {
                 str += "<tr><td>"+ranking+"</td><td>"+namMember[lstMember[0][i]]+"</td></tr>";
                 if (i<namMember.length-1) {
                     if (equal[lstMember[0][i]]==lstMember[0][i+1]) sameRank++;
-                    else { ranking +=
+                    else { ranking += sameRank; sameRank = 1; }
+                }
+            }
+            str += "</table>";
+            document.getElementById("resultField").innerHTML = str;
+        }
+
+        function showImage() {
+            var percent = Math.floor(finishSize * 100 / totalSize);
+            document.getElementById("battleNumber").innerHTML = "Battle No." + numQuestion + " (" + percent + "%)";
+            document.getElementById("leftField").innerHTML = namMember[lstMember[cmp1][head1]];
+            document.getElementById("rightField").innerHTML = namMember[lstMember[cmp2][head2]];
+            numQuestion++;
+        }
+
+        initList();
+        showImage();
+    </script>
+</body>
+</html>
